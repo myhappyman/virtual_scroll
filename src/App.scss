@@ -1,0 +1,33 @@
+.main_section {
+  padding: 40px;
+  .inner {
+    width: 420px;
+    margin: 0 auto;
+
+    .data_table {
+      height: 370px;
+      overflow: auto;
+      .order_table {
+        width: calc(100% - 10px);
+        margin: 0 auto;
+        padding: 5px;
+
+        thead {
+          text-align: center;
+          th {
+            height: 40px;
+            font-size: 12px;
+            border-bottom: 1px solid #ddd;
+          }
+        }
+
+        tbody {
+          text-align: center;
+          tr {
+            height: 30px;
+          }
+        }
+      }
+    }
+  }
+}
