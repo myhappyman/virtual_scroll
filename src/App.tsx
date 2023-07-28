@@ -1,30 +1,35 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { generate8DigitRandomNumber } from './utils';
 
 import './App.scss';
 
+type State_Type = 'order' | 'ready' | 'delivery' | 'complete';
 interface IDemo {
   order_id: number;
   name: number;
   date: string;
-  state: string;
+  state: State_Type;
   price: number;
-}
-function generate8DigitRandomNumber() {
-  const min = 10000000; // Minimum value with 8 digits (10^7)
-  const max = 99999999; // Maximum value with 8 digits (10^8 - 1)
-
-  // Generate a random number between min and max (inclusive)
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function getState() {
-  const STATE_ARR = ['주문 완료', '준비 중', '배송 중', '배송 완료'];
+  const STATE_ARR: State_Type[] = ['order', 'ready', 'delivery', 'complete'];
   return STATE_ARR[Math.floor(Math.random() * 4)];
 }
 
-const demo_list: IDemo[] = [];
-for (let i = 1; i <= 100; i++) {
-  demo_list.push({
+function getStateStr(str: State_Type) {
+  const STATE_STR = {
+    order: '주문 완료',
+    ready: '준비 중',
+    delivery: '배송 중',
+    complete: '배송 완료',
+  };
+  return STATE_STR[str];
+}
+
+const DEMO_LIST: IDemo[] = [];
+for (let i = 1; i <= 2000; i++) {
+  DEMO_LIST.push({
     order_id: i,
     date: '23.07.26',
     name: generate8DigitRandomNumber(),
@@ -34,28 +39,41 @@ for (let i = 1; i <= 100; i++) {
 }
 
 function App() {
+  const demo = useMemo(() => DEMO_LIST, []);
+  // const TOTAL_SIZE = demo.length * 30;
+  const PAGE_SIZE = 20;
+  const nowPageRef = useRef(0);
   const [list, setList] = useState<IDemo[]>([]);
   const targetElementRef = useRef<HTMLDivElement | null>(null);
-  const [divHeight, setDivHeight] = useState<number>(0);
-  const [scrollPosition, setScrollPosition] = useState<number>(0);
-  const updateScrollPosition = () => {
+  const divHeight = useRef(0);
+  const onScroll = () => {
     if (targetElementRef.current) {
-      const { scrollTop } = targetElementRef.current;
-      setScrollPosition(scrollTop);
+      const targetHeight = divHeight.current;
+      const { scrollTop, scrollHeight } = targetElementRef.current;
+
+      const num1 = scrollHeight - scrollTop - targetHeight / 10;
+      const num2 = targetHeight;
+      if (num1 < num2 && demo.length / PAGE_SIZE > nowPageRef.current) {
+        nowPageRef.current++;
+        const { current: nowPage } = nowPageRef;
+        setList(demo.slice(0, PAGE_SIZE * nowPage + PAGE_SIZE));
+      }
     }
   };
+
   useEffect(() => {
-    setList(demo_list.slice(0, 20));
-  }, []);
-  console.log(divHeight, scrollPosition);
+    const { current: nowPage } = nowPageRef;
+    setList(demo.slice(0, PAGE_SIZE * nowPage + PAGE_SIZE));
+  }, [demo]);
+
   useEffect(() => {
     const targetElement = targetElementRef.current;
     if (targetElement) {
-      setDivHeight(targetElement.offsetHeight);
-      targetElement.addEventListener('scroll', updateScrollPosition);
+      divHeight.current = targetElement.offsetHeight;
+      targetElement.addEventListener('scroll', onScroll);
       // Remove the event listener when the component unmounts
       return () => {
-        targetElement.removeEventListener('scroll', updateScrollPosition);
+        targetElement.removeEventListener('scroll', onScroll);
       };
     }
   }, []);
@@ -82,7 +100,9 @@ function App() {
               <tbody>
                 {list.map((data) => (
                   <tr key={data.order_id}>
-                    <td>{data.state}</td>
+                    <td className={`state ${data.state}`}>
+                      {getStateStr(data.state)}
+                    </td>
                     <td>{data.date}</td>
                     <td>{data.name}</td>
                     <td>{data.price.toLocaleString('ko-KR')}원</td>

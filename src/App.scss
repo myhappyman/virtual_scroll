@@ -25,6 +25,23 @@
           text-align: center;
           tr {
             height: 30px;
+
+            .state {
+              font-size: 14px;
+              border-radius: 20px;
+            }
+            .order {
+              background-color: rgb(100, 245, 100);
+            }
+            .ready {
+              background-color: rgba(246, 213, 26, 0.666);
+            }
+            .delivery {
+              background-color: rgb(51, 98, 241);
+            }
+            .complete {
+              background-color: rgb(130, 127, 131);
+            }
           }
         }
       }
