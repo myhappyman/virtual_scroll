@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { generate8DigitRandomNumber } from './utils';
+import { generate8DigitRandomNumber, moneyFomatter } from './utils';
 
 import './App.scss';
 
@@ -51,6 +51,15 @@ function App() {
       const targetHeight = divHeight.current;
       const { scrollTop, scrollHeight } = targetElementRef.current;
 
+      console.log(
+        'scrollHeight:',
+        scrollHeight,
+        'scrollTop:',
+        scrollTop,
+        'targetHeight:',
+        targetHeight,
+      );
+      console.log('nowPageRef.current', nowPageRef.current);
       const num1 = scrollHeight - scrollTop - targetHeight / 10;
       const num2 = targetHeight;
       if (num1 < num2 && demo.length / PAGE_SIZE > nowPageRef.current) {
@@ -84,13 +93,15 @@ function App() {
           <div className="data_table" ref={targetElementRef}>
             <table className="order_table">
               <colgroup>
+                <col width="15%" />
                 <col width="25%" />
-                <col width="25%" />
-                <col width="30%" />
                 <col width="20%" />
+                <col width="25%" />
+                <col width="15%" />
               </colgroup>
               <thead>
                 <tr>
+                  <th>NO.</th>
                   <th>상태</th>
                   <th>주문일</th>
                   <th>주문번호</th>
@@ -98,16 +109,34 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {list.map((data) => (
+                {list.map((data, i) =>
+                  i * (32 + nowPageRef.current) + 42 <
+                    (targetElementRef.current?.scrollTop ?? 0) ||
+                  (targetElementRef.current?.scrollTop ?? 0) >
+                    i * 30 + divHeight.current ? (
+                    <tr key={data.order_id} />
+                  ) : (
+                    <tr key={data.order_id}>
+                      <td>{i}</td>
+                      <td className={`state ${data.state}`}>
+                        {getStateStr(data.state)}
+                      </td>
+                      <td>{data.date}</td>
+                      <td>{data.name}</td>
+                      <td>{moneyFomatter(data.price)}원</td>
+                    </tr>
+                  ),
+                )}
+                {/* {list.map((data, i) => (
                   <tr key={data.order_id}>
                     <td className={`state ${data.state}`}>
                       {getStateStr(data.state)}
                     </td>
                     <td>{data.date}</td>
                     <td>{data.name}</td>
-                    <td>{data.price.toLocaleString('ko-KR')}원</td>
+                    <td>{moneyFomatter(data.price)}원</td>
                   </tr>
-                ))}
+                ))} */}
               </tbody>
             </table>
           </div>

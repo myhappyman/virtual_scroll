@@ -6,3 +6,7 @@ export function generate8DigitRandomNumber() {
   // Generate a random number between min and max (inclusive)
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export function moneyFomatter(money: number) {
+  return money.toLocaleString('ko-KR');
+}

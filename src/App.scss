@@ -6,7 +6,9 @@
 
     .data_table {
       height: 370px;
+      outline: 1px solid red;
       overflow: auto;
+
       .order_table {
         width: calc(100% - 10px);
         margin: 0 auto;
