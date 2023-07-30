@@ -44,22 +44,23 @@ function App() {
   const PAGE_SIZE = 20;
   const nowPageRef = useRef(0);
   const [list, setList] = useState<IDemo[]>([]);
+  const [scrollPosition, setScrollPosition] = useState(0);
   const targetElementRef = useRef<HTMLDivElement | null>(null);
   const divHeight = useRef(0);
   const onScroll = () => {
     if (targetElementRef.current) {
       const targetHeight = divHeight.current;
       const { scrollTop, scrollHeight } = targetElementRef.current;
-
-      console.log(
-        'scrollHeight:',
-        scrollHeight,
-        'scrollTop:',
-        scrollTop,
-        'targetHeight:',
-        targetHeight,
-      );
-      console.log('nowPageRef.current', nowPageRef.current);
+      setScrollPosition(scrollTop);
+      // console.log(
+      //   'scrollHeight:',
+      //   scrollHeight,
+      //   'scrollTop:',
+      //   scrollTop,
+      //   'targetHeight:',
+      //   targetHeight,
+      // );
+      // console.log('nowPageRef.current', nowPageRef.current);
       const num1 = scrollHeight - scrollTop - targetHeight / 10;
       const num2 = targetHeight;
       if (num1 < num2 && demo.length / PAGE_SIZE > nowPageRef.current) {
@@ -101,19 +102,30 @@ function App() {
               </colgroup>
               <thead>
                 <tr>
-                  <th>NO.</th>
-                  <th>상태</th>
-                  <th>주문일</th>
-                  <th>주문번호</th>
-                  <th>가격</th>
+                  <th scope="col">NO.</th>
+                  <th scope="col">상태</th>
+                  <th scope="col">주문일</th>
+                  <th scope="col">주문번호</th>
+                  <th scope="col">가격</th>
                 </tr>
               </thead>
+              {/* <tbody>
+                {list.map((data, i) => (
+                  <tr key={data.order_id}>
+                    <td>{i}</td>
+                    <td className={`state ${data.state}`}>
+                      {getStateStr(data.state)}
+                    </td>
+                    <td>{data.date}</td>
+                    <td>{data.name}</td>
+                    <td>{moneyFomatter(data.price)}원</td>
+                  </tr>
+                ))}
+              </tbody> */}
               <tbody>
                 {list.map((data, i) =>
-                  i * (32 + nowPageRef.current) + 42 <
-                    (targetElementRef.current?.scrollTop ?? 0) ||
-                  (targetElementRef.current?.scrollTop ?? 0) >
-                    i * 30 + divHeight.current ? (
+                  i * (32 + nowPageRef.current) + 42 < scrollPosition ||
+                  scrollPosition > i * 30 + divHeight.current ? (
                     <tr key={data.order_id} />
                   ) : (
                     <tr key={data.order_id}>
@@ -127,16 +139,6 @@ function App() {
                     </tr>
                   ),
                 )}
-                {/* {list.map((data, i) => (
-                  <tr key={data.order_id}>
-                    <td className={`state ${data.state}`}>
-                      {getStateStr(data.state)}
-                    </td>
-                    <td>{data.date}</td>
-                    <td>{data.name}</td>
-                    <td>{moneyFomatter(data.price)}원</td>
-                  </tr>
-                ))} */}
               </tbody>
             </table>
           </div>

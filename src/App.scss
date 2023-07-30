@@ -5,6 +5,8 @@
     margin: 0 auto;
 
     .data_table {
+      position: relative;
+      top: 50px;
       height: 370px;
       outline: 1px solid red;
       overflow: auto;
@@ -13,19 +15,26 @@
         width: calc(100% - 10px);
         margin: 0 auto;
         padding: 5px;
+        table-layout: fixed;
+        border-spacing: 0;
+        border-collapse: collapse;
 
         thead {
           text-align: center;
           th {
+            position: sticky;
+            top: 0;
             height: 40px;
             font-size: 12px;
             border-bottom: 1px solid #ddd;
+            background: #fff;
           }
         }
 
         tbody {
           text-align: center;
           tr {
+            display: table-row;
             height: 30px;
 
             .state {
