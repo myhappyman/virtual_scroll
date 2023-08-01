@@ -66,14 +66,15 @@ function Order() {
       if (num1 < num2 && demo.length / PAGE_SIZE > nowPageRef.current) {
         nowPageRef.current++;
         const { current: nowPage } = nowPageRef;
-        setList(demo.slice(0, PAGE_SIZE * nowPage + PAGE_SIZE));
+        // setList(demo.slice(0, PAGE_SIZE * nowPage + PAGE_SIZE));
       }
     }
   };
 
   useEffect(() => {
     const { current: nowPage } = nowPageRef;
-    setList(demo.slice(0, PAGE_SIZE * nowPage + PAGE_SIZE));
+    // setList(demo.slice(0, PAGE_SIZE * nowPage + PAGE_SIZE));
+    setList(demo);
   }, [demo]);
 
   useEffect(() => {
@@ -109,20 +110,20 @@ function Order() {
                 <th scope="col">가격</th>
               </tr>
             </thead>
-            {/* <tbody>
-                {list.map((data, i) => (
-                  <tr key={data.order_id}>
-                    <td>{i}</td>
-                    <td className={`state ${data.state}`}>
-                      {getStateStr(data.state)}
-                    </td>
-                    <td>{data.date}</td>
-                    <td>{data.name}</td>
-                    <td>{moneyFomatter(data.price)}원</td>
-                  </tr>
-                ))}
-              </tbody> */}
             <tbody>
+              {list.map((data, i) => (
+                <tr key={data.order_id}>
+                  <td>{i}</td>
+                  <td className={`state ${data.state}`}>
+                    {getStateStr(data.state)}
+                  </td>
+                  <td>{data.date}</td>
+                  <td>{data.name}</td>
+                  <td>{moneyFomatter(data.price)}원</td>
+                </tr>
+              ))}
+            </tbody>
+            {/* <tbody>
               {list.map((data, i) =>
                 i * (32 + nowPageRef.current) + 42 < scrollPosition ||
                 scrollPosition > i * 30 + divHeight.current ? (
@@ -139,7 +140,7 @@ function Order() {
                   </tr>
                 ),
               )}
-            </tbody>
+            </tbody> */}
           </table>
         </div>
       </div>

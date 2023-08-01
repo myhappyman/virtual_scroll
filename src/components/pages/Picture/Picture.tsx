@@ -15,7 +15,7 @@ const DEMO_LIST: IDemo[] = [];
 for (let i = 1; i <= 200; i++) {
   DEMO_LIST.push({
     order_id: i,
-    ...sample_img[(i % 2) - 1],
+    ...sample_img[(i - 1) % 2],
   });
 }
 
@@ -28,7 +28,7 @@ function Picture() {
           {demo.map((x) => (
             <div key={x.order_id}>
               <div className="img_wrap">
-                <img src={process.env.PUBLIC_URL + x.path} alt={x.name} />
+                <img src={x.path} alt={x.name} />
               </div>
               <div>
                 <span className="img_name">{x.name}</span>
